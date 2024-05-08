@@ -1,0 +1,36 @@
+import pandas as pd
+import numpy as np
+
+# Example DataFrame
+data = {
+    'Column1': [1, 2, np.nan, 4, 5, np.nan, np.nan, 8, 9],
+    'Column2': [10, 20, np.nan, 40, 50, np.nan, np.nan, 80, 90]
+}
+df = pd.DataFrame(data)
+
+# Function to split DataFrame based on empty rows
+def split_dataframe(df):
+    # Identify the indices of the empty rows
+    empty_rows = df.index[df.isnull().all(1)]
+    
+    # Add the start and end indices for slicing
+    start = 0
+    dataframes = []
+    for end in empty_rows:
+        dataframes.append(df.iloc[start:end])
+        start = end + 1
+    
+    # Add the last slice of DataFrame
+    if start < len(df):
+        dataframes.append(df.iloc[start:])
+    
+    return dataframes
+
+# Splitting the DataFrame
+tables = split_dataframe(df)
+
+# Now `tables` is a list of DataFrames, each representing a separate table
+for i, table in enumerate(tables):
+    print(f"Table {i+1}")
+    print(table)
+    print("\n")
